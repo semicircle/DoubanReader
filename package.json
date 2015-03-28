@@ -1,0 +1,43 @@
+{
+  "name": "DoubanReader",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/semicircle/DoubanReader.git"
+  },
+  "author": "timnew <timnew.wti@gmail.com> (http://timnew.me)",
+  "bugs": {
+    "url": "https://github.com/semicircle/DoubanReader/issues"
+  },
+  "engines": {
+    "npm": "1.4.x",
+    "node": "0.12.x"
+  },
+  "homepage": "https://github.com/semicircle/DoubanReader",
+  "dependencies": {
+
+    "bluebird": "~2.9.8",
+
+    "cheerio": "~0.18.0",
+    "coffee-script": "~1.9.0",
+    "connect-coffee-script": "~0.2.0",
+    "debug": "~2.1.1",
+    "express": "~4.11.2",
+    "lodash": "~3.1.0",
+    "superagent": "~0.21.0",
+    "superagent-prefix": "~0.0.2",
+    "yargs": "~1.3.3"
+  },
+  "devDependencies": {
+    "chai": "^1.10.0",
+    "gulp-watch": "^3.0.0",
+    "mocha": "^2.2.1",
+    "mocha-jenkins-reporter": "^0.1.4",
+    "sinon": "^1.12.2",
+    "sinon-chai": "^2.6.0",
+    "supertest": "^0.15.0"
+  }
+}
