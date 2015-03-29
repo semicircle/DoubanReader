@@ -13,11 +13,12 @@ db.collections =
   _all: []
 
 __.assign db.collections,
+  books: addCollection 'books'
   records: addCollection 'records'
 
 Promise.settle [
   db.collections.records.ensureIndex { bookId: 1, userLink: 1}, { name: 'book_user', unique: true, background: true }
-
+  db.collections.books.ensureIndex { link: 1 }, {name: 'book', unique: true, background: true}
 #  db.collections.archiveRecords.ensureIndex { archive: 1 }, { name: 'archive', unique: true, background: true }
 # db.collections.archiveRecords.ensureIndex { date: 1 }, { name: 'date', background: true }
 # db.collections.archiveRecords.ensureIndex { type: 1 }, { name: 'type', background: true }
