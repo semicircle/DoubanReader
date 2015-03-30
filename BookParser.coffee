@@ -47,11 +47,11 @@ class BookParser extends UserParser
     $readers.each (index, elem) ->
       readers.push __.trim $(this).text()
 
-    mongo.collections.books.updateAsync { link: url }, { $set: { tags, score, readers }}
+    bookId = url.split('/')[4]
+    mongo.collections.books.updateAsync { bookId }, { $set: { tags, score, readers }}
 
     console.log __.intersection(tags, @niceTags)
     return unless __.intersection(tags, @niceTags).length isnt 0
-
 
     # children section
 
@@ -63,15 +63,11 @@ class BookParser extends UserParser
         
         link = $(this).attr('href')
         title = __.trim $(this).text()
+        bookId = link.split('/')[4]
         
         if title isnt ""
-          
-          p = mongo.collections.books.findAsync { link }
-          .then (any) =>
-            if any.length is 0 or any[0].level is null
-              console.log "insert book #{title}"
-              mongo.collections.books.updateAsync { link }, { link, title, level}, upsert: true
-          promises.push p
+          console.log "upsert book #{title}"
+          promises.push mongo.collections.books.updateAsync { bookId }, { $set: {bookId, title}, $setOnInsert: { level }}, upsert: true
 
       Promise.all promises
       console.log "url done: #{url}"

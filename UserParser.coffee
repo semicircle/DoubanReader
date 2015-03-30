@@ -12,6 +12,13 @@ delay = (ms) ->
 
 class UserParser
   constructor: (@bookname) ->
+    @state = 'collections'
+
+  nextState: ->
+    @status = switch @state
+      when 'collections' then 'doings'
+      when 'doings' then 'wishes'
+      when 'wishes' then null
 
   verifyUrl: (url) ->
     url.indexOf('collections') isnt -1
@@ -45,7 +52,6 @@ class UserParser
     html = result.res.text
     $ = cheerio.load html
 
-  
     $content = $('#content')
     if $content.length == 0
       #TODO: handle retry
@@ -59,25 +65,28 @@ class UserParser
   
     $collectionsTab = $content.find('#collections_tab')
     $usersDiv = $collectionsTab.find('.pl2 a')
+
     if $usersDiv.length != 0
-      promises = []
+      # promises = []
+      users = []
       $usersDiv.each (index, elem) ->
         userLink = $(this).attr('href')
         spans = $(this).find('span')
         name = spans.first().text()
         city = __.trim spans.last().text(), '()'
         date = __.trim $(this).parent().parent().find('.pl').children().first().text()
-        bookId = url.split('/')[4]
         
-        console.log index, bookId, name, city, date, userLink
-        data = {index, bookId, bookname, name, city, date, userLink}
+        console.log index, name, city, date, userLink
+        user = {name, city, date, userLink}
+        users.push user
+        # promises.push mongo.collections.records.updateAsync { userLink, bookId } , data, upsert: true
 
-        promises.push mongo.collections.records.updateAsync { userLink, bookId } , data, upsert: true
-
-      Promise.all promises
+      # Promise.all promises
+      bookId = url.split('/')[4]
+      mongo.collections.books.updateAsync { bookId }, { $push: {users: {$each: users}}}
       .then =>
         next = $('.next').first().children().first().attr('href')
-        delay 1500
+        delay 2000
         .then =>
           @startUrl next if next? 
 
