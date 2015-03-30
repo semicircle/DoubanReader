@@ -156,16 +156,27 @@ parseuser = (level) ->
 #    results.forEach (item, index) ->
 #      console.log item.bookname, item.name
 
+showresult = ->
+  mongo.collections.results.find({value: {$gt: 100}}).sort({value: -1})
+  .then (results) ->
+    results.forEach (item) ->
+      console.log item
+
 analyze = ->
   mapUsers = ->
     if @users
       @users.forEach (elem, index) ->
-        emit(elem.userLink, 1)
+        if elem.city is '北京'
+          val = if @score then parseFloat(@score) else 6.0
+          val += if @level then (10 - parseInt(@level)) else 5
+        
+          emit(elem.userLink, val)
+
 
   reduceUsers = (userLink, scoreObjVals) ->
     Array.sum(scoreObjVals)
 
-  mongo.collections.books.mapReduceAsync mapUsers, reduceUsers, out: {reduce : 'aggregation.rawscore'}
+  mongo.collections.books.mapReduceAsync mapUsers, reduceUsers, out: {reduce : 'results'}
   .then ->
     console.log 'done'
 
@@ -183,4 +194,5 @@ else
     when 'parseuser' then parseuser parseInt(arg1)
     # when 'showrecord' then showrecord()
     when 'analyze' then analyze()
+    when 'showresult' then showresult()
     else showusage()

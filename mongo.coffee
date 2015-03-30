@@ -14,6 +14,7 @@ db.collections =
 
 __.assign db.collections,
   books: addCollection 'books'
+  results: addCollection 'results'
   #records: addCollection 'records'
 
 Promise.settle [
