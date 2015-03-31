@@ -165,13 +165,11 @@ showresult = ->
 analyze = ->
   mapUsers = ->
     if @users
-      @users.forEach (elem, index) ->
-        if elem.city is '北京'
-          val = if @score then parseFloat(@score) else 6.0
-          val += if @level then (10 - parseInt(@level)) else 5
-        
-          emit(elem.userLink, val)
+      rating = if @score? then parseFloat(@score) else 6.0
+      level = if @level? then (10 - parseInt(@level)) else 5
 
+      @users.forEach (elem, index) ->
+        emit(elem.userLink, rating + level) if elem.city is '北京'
 
   reduceUsers = (userLink, scoreObjVals) ->
     Array.sum(scoreObjVals)
